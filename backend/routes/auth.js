@@ -1,5 +1,7 @@
 const express = require("express");
 const authRouter = express.Router();
+const jwt = require("jsonwebtoken");
+const JWT_USER_PASSWORD = "BHUNGI"
 const {userModel} = require("../db/db");
 
 authRouter.post("/signup" ,async function(req,res){
@@ -25,6 +27,27 @@ catch(error){
 });
 
 authRouter.post("/signin" , function(req,res){
+  const {firstName,lastName,email,password} = req.body;
+
+  const user = userModel.findOne({
+    email,
+    password
+  })
+  if(user){
+    const token = jwt.sign({
+      id : user._id
+    },JWT_USER_PASSWORD)
+
+    res.json({
+      token:token
+    })
+  }
+  else{
+    res.json({
+      message: "Incorrect Credetials"
+    })
+  }
+ 
 
 });
 
