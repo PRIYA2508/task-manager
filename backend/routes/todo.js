@@ -13,7 +13,8 @@ const todo = await todoModel.create({
 if(todo){
     res.json({
         message: "Task added",
-        todo:todo
+        todoId:todo._id,
+
     })
 }
 else{
@@ -22,10 +23,22 @@ else{
     })
 }
 
-
-
 });
-todoRouter.put("/update/task", function(req,res){
+todoRouter.put("/update/task",userMiddleware, async function(req,res){
+const userId = req.userId;
+const {title , description,todoId} = req.body;
+const todo = await todoModel.updateOne({
+    _id:todoId,
+    userId:userId,
+},{
+    title,
+    description
+});
+
+res.json({
+    message: "course updated",
+    todoId: todoId._id
+})
 
 })
 todoRouter.delete("/delete/task" , function(req,res){
