@@ -41,10 +41,28 @@ res.json({
 })
 
 })
-todoRouter.delete("/delete/task" , function(req,res){
-    
+todoRouter.delete("/delete/task",userMiddleware ,async function(req,res){
+    const userId = req.userId;
+    const {title,description,todoId} = req.body;
+
+    const result= await todoModel.deleteOne({
+        userId:userId,
+        _id: todoId
 })
-todoRouter.post("/show/list", function(req,res){
+res.json({
+    message: "deleted successfully",
+    result: result
+})
+})
+todoRouter.get("/show/list",userMiddleware,async function(req,res){
+    const userId = req.userId;
+    const showall= await todoModel.find({
+      userId: userId
+    })
+    res.json({
+        message: "all of your task",
+        task:showall
+    })
 
 })
 
